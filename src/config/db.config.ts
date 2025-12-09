@@ -1,4 +1,3 @@
-import { error } from "console";
 import mongoose from "mongoose";
 
 export const DB_CONNECTION = (DB_URI: string) => {
