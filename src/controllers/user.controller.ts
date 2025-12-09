@@ -21,11 +21,7 @@ export const getAllUsers = asyncHandler(async (req: Request, res: Response) => {
 });
 
 export const createUser = asyncHandler(async (req: Request, res: Response) => {
-  //   const { userName, email, password } = req.body;
-
-  const userName = req.body.userName;
-  const email = req.body.email;
-  const password = req.body.password;
+  const { userName, email, password } = req.body;
 
   if (!userName) throw new CustomError("user name is required!", 400);
   if (!email) throw new CustomError("email is required!", 400);
