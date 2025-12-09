@@ -1,17 +1,24 @@
 import express, { Request, Response } from "express";
 import "dotenv/config";
 import { DB_CONNECTION } from "./config/db.config";
+import userRouter from "./routes/user.route";
 
 const app = express();
 const PORT = process.env.PORT || 9000;
 const DB_URI = process.env.DB_URI ?? "";
 
-app.get("/", (req: Request, res: Response) => {
+// invoking the database uri link from env file
+DB_CONNECTION(DB_URI as string);
+
+app.use(express.json({ limit: "5mb" }));
+app.use(express.urlencoded({ limit: "5mb", extended: true }));
+
+app.get("/", (req, res) => {
   res.send("hi there");
 });
 
-// invoking the database uri link from env file
-DB_CONNECTION(DB_URI as string);
+//all the routes
+app.use("/api/user", userRouter);
 
 app.listen(PORT, () => {
   console.log(`server is listening on port ${PORT}`);
