@@ -21,8 +21,6 @@ export const authenticate = () => {
     try {
       const access_token = req.cookies.access_token;
 
-      console.log(access_token);
-
       if (!access_token)
         throw new CustomError("Unauthorized access denied!", 401);
 
@@ -40,7 +38,6 @@ export const authenticate = () => {
 
       const user = await User.find({ email: decode_access_token.email });
 
-      console.log(user);
       if (!user) throw new CustomError("Unauthorized access token", 401);
 
       req.user = {
