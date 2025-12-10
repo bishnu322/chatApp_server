@@ -1,6 +1,10 @@
 import express, { Request, Response } from "express";
 import "dotenv/config";
 import { DB_CONNECTION } from "./config/db.config";
+import cookieParser from "cookie-parser";
+
+// all the routes import
+import authRouter from "./routes/auth.route";
 import userRouter from "./routes/user.route";
 
 const app = express();
@@ -12,6 +16,7 @@ DB_CONNECTION(DB_URI as string);
 
 app.use(express.json({ limit: "5mb" }));
 app.use(express.urlencoded({ limit: "5mb", extended: true }));
+app.use(cookieParser());
 
 app.get("/", (req, res) => {
   res.send("hi there");
@@ -19,6 +24,7 @@ app.get("/", (req, res) => {
 
 //all the routes
 app.use("/api/user", userRouter);
+app.use("/api/auth", authRouter);
 
 app.listen(PORT, () => {
   console.log(`server is listening on port ${PORT}`);
