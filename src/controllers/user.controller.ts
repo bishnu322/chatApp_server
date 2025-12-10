@@ -40,36 +40,6 @@ export const getAllUsersById = asyncHandler(
   }
 );
 
-// creating users
-export const createUser = asyncHandler(async (req: Request, res: Response) => {
-  const { userName, email, password } = req.body;
-
-  if (!userName) throw new CustomError("user name is required!", 400);
-  if (!email) throw new CustomError("email is required!", 400);
-  if (!password) throw new CustomError("password is require", 400);
-
-  const user = await User.create({
-    userName,
-    email,
-    password,
-  });
-
-  //   hashing password
-  const hashedPassword = await hashPassword(password);
-  user.password = hashedPassword;
-
-  await user.save();
-
-  const { password: pass, ...newUser } = user.toObject();
-
-  res.status(201).json({
-    message: "User created successfully",
-    success: true,
-    status: "Success",
-    data: newUser,
-  });
-});
-
 // remove user
 export const removeUserById = asyncHandler(
   async (req: Request, res: Response) => {

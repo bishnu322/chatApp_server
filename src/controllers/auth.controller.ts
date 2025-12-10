@@ -33,8 +33,8 @@ export const userLogin = asyncHandler(async (req: Request, res: Response) => {
   res
     .cookie("access_token", access_token, {
       secure: process.env.NODE_ENV === "development" ? false : true,
-      sameSite: "lax",
       httpOnly: true,
+      sameSite: "lax",
       maxAge: 24 * 60 * 60,
     })
     .json({

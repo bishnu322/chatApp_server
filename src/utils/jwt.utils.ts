@@ -1,4 +1,4 @@
-import { IJwtPayload } from "../types/jwt.types";
+import { IJwtDecodedPayload, IJwtPayload } from "../types/jwt.types";
 import jwt from "jsonwebtoken";
 
 const PRIVATE_KEY = process.env.JWT_PRIVATE_KEY ?? "";
@@ -12,8 +12,8 @@ export const generateJwtToken = (payload: IJwtPayload) => {
   return token;
 };
 
-export const verifyToken = (token: string) => {
+export const verifyToken = (token: string): IJwtDecodedPayload => {
   const verifiedToken = jwt.verify(token, PRIVATE_KEY);
 
-  return verifiedToken;
+  return verifiedToken as IJwtDecodedPayload;
 };
