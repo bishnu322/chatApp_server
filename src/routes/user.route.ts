@@ -6,6 +6,6 @@ import { authenticate } from "../middlewares/auth.middleware";
 const router = express.Router();
 
 router.delete("/:id", authenticate(), removeUserById);
-router.get("/", authenticate(), getAllUsers);
+router.get("/", getAllUsers);
 
 export default router;

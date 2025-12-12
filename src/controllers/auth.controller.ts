@@ -35,7 +35,7 @@ export const userLogin = asyncHandler(async (req: Request, res: Response) => {
       secure: process.env.NODE_ENV === "development" ? false : true,
       httpOnly: true,
       sameSite: "lax",
-      maxAge: 24 * 60 * 60,
+      maxAge: 7 * 24 * 60 * 60,
     })
     .json({
       message: "Fetched user",
@@ -72,5 +72,31 @@ export const createUser = asyncHandler(async (req: Request, res: Response) => {
     success: true,
     status: "Success",
     data: newUser,
+  });
+});
+
+// user logout
+
+export const logoutUser = asyncHandler(async (req: Request, res: Response) => {
+  const { userId } = req.body;
+
+  if (!userId) throw new CustomError("not authorize to logout", 400);
+
+  const user = await User.findById(userId);
+
+  if (!user) throw new CustomError("User not found!", 404);
+
+  res.clearCookie("access_token", {
+    httpOnly: true,
+    secure: false,
+    sameSite: "lax",
+    path: "/",
+  });
+
+  res.status(201).json({
+    message: "User logged out successfully",
+    success: true,
+    status: "Success",
+    data: [],
   });
 });

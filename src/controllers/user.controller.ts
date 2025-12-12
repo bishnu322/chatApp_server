@@ -6,7 +6,26 @@ import { hashPassword } from "../utils/password.utils";
 
 // getting all users detail
 export const getAllUsers = asyncHandler(async (req: Request, res: Response) => {
-  const filter = {};
+  const { query } = req.query;
+
+  const filter: Record<string, any> = {};
+
+  if (query) {
+    filter.$or = [
+      {
+        userName: {
+          $regex: query,
+          $options: "i",
+        },
+      },
+      {
+        email: {
+          $regex: query,
+          $options: "i",
+        },
+      },
+    ];
+  }
 
   const allUser = await User.find(filter);
 
