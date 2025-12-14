@@ -57,10 +57,11 @@ export const accessChat = asyncHandler(async (req: Request, res: Response) => {
   });
 
   // Populate the newly created chat
-  const fullChat = await Chat.findById(newChat._id).populate(
-    "users",
-    "-password"
-  );
+  const fullChat = await Chat.findById(newChat._id)
+    .populate("users", "-password")
+    .exec();
+
+  await newChat.save();
 
   return res.status(201).json({
     success: true,
@@ -69,35 +70,16 @@ export const accessChat = asyncHandler(async (req: Request, res: Response) => {
   });
 });
 
-// export const fetchChats = asyncHandler(async (req: Request, res: Response) => {
-//   const chats = await Chat.find({
-//     users: { $elemMatch: { $eq: req.user?._id } },
-//   })
-//     .populate("users", "-password")
-//     .populate("groupAdmin", "-password")
-//     .populate({
-//       path: "latestMessage",
-//       populate: {
-//         path: "sender",
-//         select: "userName email avatar",
-//       },
-//     })
-//     .sort({ updatedAt: -1 });
-
-//   return res.status(200).json({
-//     success: true,
-//     message: "Chats fetched successfully",
-//     data: chats,
-//   });
-// });
-
 export const findUserChats = asyncHandler(
   async (req: Request, res: Response) => {
     const { userId } = req.params;
 
     if (!userId) throw new CustomError("userId is required!", 400);
 
-    const chats = await Chat.find({ users: { $in: [userId] } });
+    const chats = await Chat.find({ users: { $in: [userId] } }).populate(
+      "users",
+      "-password"
+    );
 
     if (!chats) throw new CustomError("chat not found", 404);
 
