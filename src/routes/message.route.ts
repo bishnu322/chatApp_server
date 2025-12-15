@@ -4,7 +4,7 @@ import { authenticate } from "../middlewares/auth.middleware";
 
 const router = express();
 
-router.post("/", authenticate(), createMessage);
-router.get("/:chatId", authenticate(), getMessage);
+router.post("/", createMessage);
+router.get("/:chatId", getMessage);
 
 export default router;

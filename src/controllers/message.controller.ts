@@ -8,15 +8,15 @@ import { Chat } from "../models/chat.model";
 
 export const createMessage = asyncHandler(
   async (req: Request, res: Response) => {
-    const { chatId, text } = req.body;
+    const { senderId, chatId, text } = req.body;
 
     // Validate required fields
-    if (!chatId || !text) {
+    if (!chatId || !text || !senderId) {
       throw new CustomError("chatId and text are required!", 400);
     }
 
     // Get senderId from authenticated user
-    const senderId = req.user?._id;
+    // const senderId = req.user?._id;
 
     if (!senderId) {
       throw new CustomError("User not authenticated!", 401);
@@ -45,6 +45,8 @@ export const createMessage = asyncHandler(
       text,
     });
 
+    await message.save();
+
     // Update the chat's latestMessage field
     await Chat.findByIdAndUpdate(chatId, {
       latestMessage: message._id,
@@ -70,7 +72,9 @@ export const getMessage = asyncHandler(async (req: Request, res: Response) => {
 
   if (!chatId) throw new CustomError("chatId is required!", 400);
 
-  const messages = await Message.find({ chatId });
+  const messages = await Message.find({ chatId })
+    .populate("senderId", "userName email avatar")
+    .populate("chatId");
 
   res.status(201).json({
     message: "message fetched successfully",

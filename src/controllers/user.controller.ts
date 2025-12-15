@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import { User } from "../models/user.schema";
 import { CustomError } from "../middlewares/errorHandler.middleware";
 import { asyncHandler } from "../utils/asyncHandler";
-import { hashPassword } from "../utils/password.utils";
 
 // getting all users detail
 export const getAllUsers = asyncHandler(async (req: Request, res: Response) => {

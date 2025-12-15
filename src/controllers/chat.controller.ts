@@ -5,16 +5,17 @@ import { User } from "../models/user.schema";
 import { asyncHandler } from "../utils/asyncHandler";
 
 export const accessChat = asyncHandler(async (req: Request, res: Response) => {
-  const { userId } = req.body;
+  const { firstId, secondId } = req.body;
 
   // Validate userId is provided
-  if (!userId) {
+
+  if (!secondId || !firstId) {
     throw new CustomError("UserId is required!", 400);
   }
 
   // Convert to string for comparison
-  const currentUserId = req.user?._id.toString();
-  const targetUserId = userId.toString();
+  const currentUserId = firstId.toString();
+  const targetUserId = secondId.toString();
 
   // Check if user is trying to chat with themselves
   if (targetUserId === currentUserId) {
@@ -22,7 +23,7 @@ export const accessChat = asyncHandler(async (req: Request, res: Response) => {
   }
 
   // Validate if the target user exists
-  const targetUser = await User.findById(userId);
+  const targetUser = await User.findById(secondId);
   if (!targetUser) {
     throw new CustomError("User not found!", 404);
   }
@@ -92,12 +93,13 @@ export const findUserChats = asyncHandler(
 );
 
 export const findChat = asyncHandler(async (req: Request, res: Response) => {
-  const { userId } = req.params;
-  const loggedInUserId = req?.user;
+  const { userId, secondId } = req.params;
 
   if (!userId) throw new CustomError("userId is required!", 400);
 
-  const chat = await Chat.find({ users: { $all: [userId, loggedInUserId] } });
+  const chat = await Chat.findOne({
+    users: { $all: [userId, secondId] },
+  }).populate("users", "-password");
 
   if (!chat) throw new CustomError("chat not found", 404);
 

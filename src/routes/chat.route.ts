@@ -8,8 +8,8 @@ import { authenticate } from "../middlewares/auth.middleware";
 
 const router = express();
 
-router.post("/", authenticate(), accessChat);
+router.post("/", accessChat);
 router.get("/:userId", findUserChats);
-router.get("/find/:userId", authenticate(), findChat);
+router.get("/find/:userId/:secondId", findChat);
 
 export default router;
